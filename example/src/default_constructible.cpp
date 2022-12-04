@@ -1,8 +1,8 @@
-#include "mbp/examples/mbp_examples.hpp"
-#include "mbp/sim/simulator.hpp"
+#include <mbp/examples/mbp_examples.hpp>
+#include <mbp/sim/simulator.hpp>
 
-BP_CLASS branchPredictorImpl{};
+BP_CLASS branchPredictor{};
 
-mbp::Predictor* const mbp::branchPredictor = &branchPredictorImpl;
-
-int main(int argc, char** argv) { return mbp::Simulation(argc, argv); }
+int main(int argc, char** argv) {
+  return mbp::SimMain(argc, argv, &branchPredictor);
+}

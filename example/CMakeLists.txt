@@ -17,17 +17,32 @@ endif()
 
 # Function for adding a predictor simulator as CMake target.
 #
-# In this function it is assumed that there are no object files
-# that need to be added to the compilation.
-# (For example, because the predictor is a template.)
-# They can be added with other CMake Commands.
-#
 # @param name Executable name.
 # @param class Class name of the predictor.
 # @param extra_args Source files to compile with the target.
 function(add_mbp_sim name class source)
   add_executable(${name} ${source} ${ARGN})
   target_compile_definitions(${name} PRIVATE BP_CLASS=${class})
+  target_link_libraries(${name} PRIVATE mbp_examples mbp_utils mbp_sim)
+  set_target_properties(${name} PROPERTIES
+    CXX_STANDARD 17
+    INTERPROCEDURAL_OPTIMIZATION TRUE
+  )
+  target_compile_options(${name} PRIVATE
+    "-Wall" "-O3" "-march=native" "-mtune=native"
+  )
+endfunction()
+
+# Function for adding a predictor comparison simulator as CMake target.
+#
+# @param name Executable name.
+# @param class0 Class name of the first predictor.
+# @param class1 Class name of the second predictor.
+# @param extra_args Source files to compile with the target.
+function(add_mbp_comp name class0 class1 source)
+  add_executable(${name} ${source} ${ARGN})
+  target_compile_definitions(${name} PRIVATE BP_CLASS0=${class0})
+  target_compile_definitions(${name} PRIVATE BP_CLASS1=${class1})
   target_link_libraries(${name} PRIVATE mbp_examples mbp_utils mbp_sim)
   set_target_properties(${name} PROPERTIES
     CXX_STANDARD 17
@@ -75,3 +90,9 @@ add_mbp_sim(hashed_perceptron_64KB
 add_mbp_sim(tage_64KB "" src/example_tage.cpp)
 add_mbp_sim(batage_64KB "" src/example_batage.cpp)
 add_mbp_sim(tage_sc_l_64KB "mbp::TageScL" src/default_constructible.cpp)
+
+# Comparison of 2bcgskew_64KB vs gshare_64KB
+add_mbp_comp(2bcgskwew_vs_gshare_64KB
+  "mbp::Twobcgskew<>"
+  "mbp::Gshare<25, 18>"
+  src/compare.cpp)

@@ -1,5 +1,5 @@
-#include "mbp/examples/batage.hpp"
-#include "mbp/sim/simulator.hpp"
+#include <mbp/examples/batage.hpp>
+#include <mbp/sim/simulator.hpp>
 
 static constexpr mbp::Batage::TableSpec T00 = {
     .ghistLen = 0, .idxWidth = 14, .tagWidth = 0, .ctrWidth = 4};
@@ -34,14 +34,14 @@ static constexpr mbp::Batage::TableSpec T14 = {
 static constexpr mbp::Batage::TableSpec T15 = {
     .ghistLen = 257, .idxWidth = 9, .tagWidth = 17, .ctrWidth = 4};
 
-static constexpr std::array<mbp::Batage::TableSpec, 16> TAGE_SPECS = {
+static constexpr std::array<mbp::Batage::TableSpec, 16> BATAGE_SPECS = {
     T00, T01, T02, T03, T04, T05, T06, T07,
     T08, T09, T10, T11, T12, T13, T14, T15};
 
 static constexpr int seed = 158715;
 
-mbp::Batage branchPredictorImpl({TAGE_SPECS.begin(), TAGE_SPECS.end()}, seed);
+mbp::Batage batagePredictor({BATAGE_SPECS.begin(), BATAGE_SPECS.end()}, seed);
 
-mbp::Predictor* const mbp::branchPredictor = &branchPredictorImpl;
-
-int main(int argc, char** argv) { return mbp::Simulation(argc, argv); }
+int main(int argc, char** argv) {
+  return mbp::SimMain(argc, argv, &batagePredictor);
+}

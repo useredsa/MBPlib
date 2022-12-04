@@ -13,7 +13,6 @@ namespace mbp {
  */
 class SbbtReader {
  public:
-
   SbbtReader(const SbbtReader& other) = delete;
   SbbtReader(const std::string& trace);
   ~SbbtReader();

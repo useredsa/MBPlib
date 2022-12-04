@@ -6,7 +6,7 @@
 
 namespace mbp {
 
-//TODO(useredsa): Make the functions templated.
+// TODO(useredsa): Make the functions templated.
 
 constexpr uint32_t u32_sadd(uint32_t reg, uint32_t val, size_t width) {
   return std::min(reg + val, (uint32_t{1} << width) - 1);
