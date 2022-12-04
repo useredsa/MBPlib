@@ -134,6 +134,7 @@ int Simulation(int argc, char** argv) {
   for (const auto& [ip, inf] : mostFailed) {
     json j{
         {"ip", ip},
+        {"occurrences", inf.occurrences},
         {"mpki", 1000.0 * inf.misses / metricInstr},
         {"accuracy",
          static_cast<double>(inf.occurrences - inf.misses) / inf.occurrences},
@@ -144,7 +145,8 @@ int Simulation(int argc, char** argv) {
   json output = {
       {"metadata",
        {
-           {"simulator", "MBPlib std sim for cnd branches v0.4.0"},
+           {"simulator", "MBPlib std simulator"},
+           {"simulator_version", "v0.5.0"},
            {"trace", tracepath},
            {"warmup_instr", warmupInstrs},
            {"simulation_instr", metricInstr},
