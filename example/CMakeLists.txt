@@ -97,3 +97,20 @@ add_mbp_sim(tage_sc_l_64KB "mbp::TageScL{}")
 # Example comparing 2bcgskew_64KB and gshare_64KB
 add_mbp_comp(2bcgskwew_vs_gshare_64KB
   "mbp::Twobcgskew<>{}" "mbp::Gshare<25, 18>{}")
+
+# Example evaluating multiple batages simultaneously
+foreach(num RANGE 2 20 6)
+  add_executable(parallel_sim_${num} src/parallel_simulation_example.cpp)
+  target_compile_definitions(parallel_sim_${num}
+	PRIVATE
+      NUM_PREDICTORS_TESTED=${num}
+  )
+  target_link_libraries(parallel_sim_${num} PRIVATE mbp_examples mbp_utils mbp_sim)
+  set_target_properties(parallel_sim_${num} PROPERTIES
+    CXX_STANDARD 17
+    INTERPROCEDURAL_OPTIMIZATION TRUE
+  )
+  target_compile_options(parallel_sim_${num} PRIVATE
+    "-Wall" "-O3" "-march=native" "-mtune=native"
+  )
+endforeach()
