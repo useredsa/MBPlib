@@ -1,5 +1,7 @@
+#ifndef MBPLIB_EXAMPLE_TAGE_SPECS_HPP_
+#define MBPLIB_EXAMPLE_TAGE_SPECS_HPP_
+
 #include <mbp/examples/tage.hpp>
-#include <mbp/sim/simulator.hpp>
 
 // clang-format off
 constexpr mbp::Tage::TableSpec T00 =
@@ -104,8 +106,4 @@ constexpr std::array<mbp::Tage::TableSpec, 16> TAGE_SPECS = {
     T00, T01, T02, T03, T04, T05, T06, T07,
     T08, T09, T10, T11, T12, T13, T14, T15};
 
-mbp::Tage tagePredictor({TAGE_SPECS.begin(), TAGE_SPECS.end()});
-
-int main(int argc, char** argv) {
-  return mbp::SimMain(argc, argv, &tagePredictor);
-}
+#endif  // MBPLIB_EXAMPLE_TAGE_SPECS_HPP_
