@@ -79,6 +79,12 @@ add_mbp_sim(tnmnt_gshare_bim_64KB
     "mbp::BimodalTournament<mbp::Gshare<25, 17>, mbp::Bimodal<16>, 16>{}")
 add_mbp_sim(gtnmnt_gshare_bim_64KB
     "mbp::GshareTournament<mbp::Gshare<25, 17>, mbp::Bimodal<16>, 20, 16>{}")
+# Another way of obtaining the same predictor
+add_mbp_sim(gtnmnt_gshare_bim_alt "mbp::TournamentPred{         \
+    std::unique_ptr<mbp::Predictor>(new mbp::Gshare<20, 16>{}), \
+    std::unique_ptr<mbp::Predictor>(new mbp::Bimodal<16>{}),    \
+    std::unique_ptr<mbp::Predictor>(new mbp::Gshare<25, 17>{})  \
+}")
 add_mbp_sim(2bcgskew_64KB "mbp::Twobcgskew<>{}")
 
 # State of the Art Predictors

@@ -3,6 +3,7 @@
 
 #include <array>
 #include <bitset>
+#include <memory>
 
 #include "mbp/sim/predictor.hpp"
 #include "mbp/utils/saturated_reg.hpp"
@@ -10,6 +11,12 @@
 #include "nlohmann/json.hpp"
 
 namespace mbp {
+
+// TODO(useredsa): templated versions are faster
+// because the compiler optimizes better.
+// Remove the BimodalTournament and GshareTournament classes
+// and instead provide a templated version and a runtime version
+// of the Tournament predictor.
 
 template <typename BP0, typename BP1, int T = 14>
 struct BimodalTournament : Predictor {
@@ -94,6 +101,62 @@ struct GshareTournament : Predictor {
         {"log_table_size", T},
         {"predictor_0", bp0.metadata_stats()},
         {"predictor_1", bp1.metadata_stats()},
+    };
+  }
+};
+
+struct TournamentPred : Predictor {
+  std::unique_ptr<Predictor> meta;
+  std::unique_ptr<Predictor> bp0;
+  std::unique_ptr<Predictor> bp1;
+  // Cached Data
+  uint64_t predictedIp;
+  bool tracked;
+  bool provider;
+  std::array<bool, 2> prediction;
+
+  TournamentPred(std::unique_ptr<Predictor> meta,
+                 std::unique_ptr<Predictor> bp0,
+                 std::unique_ptr<Predictor> bp1) 
+    : meta(std::move(meta)),
+      bp0(std::move(bp0)),
+      bp1(std::move(bp1)),
+      tracked(true) {}
+
+  bool predict(uint64_t ip) override {
+    if (predictedIp == ip && tracked == false) return prediction[provider];
+    predictedIp = ip;
+    tracked = false;
+    provider = meta->predict(ip);
+    prediction[0] = bp0->predict(ip);
+    prediction[1] = bp1->predict(ip);
+    return prediction[provider];
+  }
+
+  void train(const Branch& b) override {
+    this->predict(b.ip());
+    bp0->train(b);
+    bp1->train(b);
+    if (prediction[0] != prediction[1]) {
+      Branch metaBranch = {
+        b.ip(), b.target(), b.opcode(), prediction[1] == b.isTaken()};
+      meta->train(metaBranch);
+    }
+  }
+
+  void track(const Branch& b) override {
+    meta->track(b);
+    bp0->track(b);
+    bp1->track(b);
+    tracked = true;
+  }
+
+  json metadata_stats() const override {
+    return {
+        {"name", "MBPlib Tournament"},
+        {"metapredictor", meta->metadata_stats()},
+        {"predictor_0", bp0->metadata_stats()},
+        {"predictor_1", bp1->metadata_stats()},
     };
   }
 };
