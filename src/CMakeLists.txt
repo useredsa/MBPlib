@@ -37,7 +37,7 @@ target_include_directories(mbp_utils INTERFACE ../include)
 target_compile_features(mbp_utils INTERFACE cxx_std_17)
 
 add_library(mbp_examples SHARED examples/tage_sc_l_cbp5.cpp)
-target_link_libraries(mbp_sim PUBLIC mbp_core mbp_utils)
+target_link_libraries(mbp_examples PUBLIC mbp_core mbp_utils)
 target_include_directories(mbp_examples PUBLIC ../include)
 set_target_properties(mbp_examples PROPERTIES
   INTERPROCEDURAL_OPTIMIZATION TRUE
