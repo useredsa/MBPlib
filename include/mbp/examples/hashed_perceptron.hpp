@@ -4,7 +4,7 @@
 #include <bitset>
 #include <vector>
 
-#include "mbp/sim/predictor.hpp"
+#include "mbp/core/predictor.hpp"
 #include "mbp/utils/saturated_reg.hpp"
 #include "mbp/utils/indexing.hpp"
 #include "nlohmann/json.hpp"

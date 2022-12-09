@@ -1,7 +1,7 @@
 #ifndef MBP_EXAMPLES_TAGE_SC_L_CBP5_HPP_
 #define MBP_EXAMPLES_TAGE_SC_L_CBP5_HPP_
 
-#include "mbp/sim/predictor.hpp"
+#include "mbp/core/predictor.hpp"
 #include "nlohmann/json.hpp"
 
 namespace mbp {

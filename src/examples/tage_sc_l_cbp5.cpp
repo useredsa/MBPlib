@@ -7,7 +7,7 @@
 #include <vector>
 using namespace std;
 
-#include <mbp/sim/branch.hpp>
+#include <mbp/core/branch.hpp>
 
 namespace mbp {
 

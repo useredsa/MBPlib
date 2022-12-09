@@ -23,7 +23,7 @@ endif()
 function(add_mbp_sim name predictor)
   add_executable(${name} src/main.cpp ${ARGN})
   target_compile_definitions(${name} PRIVATE PREDICTOR=${predictor})
-  target_link_libraries(${name} PRIVATE mbp_examples mbp_utils mbp_sim)
+  target_link_libraries(${name} PRIVATE mbp_examples mbp_sim)
   set_target_properties(${name} PROPERTIES
     CXX_STANDARD 17
     INTERPROCEDURAL_OPTIMIZATION TRUE
@@ -43,7 +43,7 @@ function(add_mbp_comp name predictor0 predictor1)
   add_executable(${name} src/compare.cpp ${ARGN})
   target_compile_definitions(${name} PRIVATE PREDICTOR0=${predictor0})
   target_compile_definitions(${name} PRIVATE PREDICTOR1=${predictor1})
-  target_link_libraries(${name} PRIVATE mbp_examples mbp_utils mbp_sim)
+  target_link_libraries(${name} PRIVATE mbp_examples mbp_sim)
   set_target_properties(${name} PROPERTIES
     CXX_STANDARD 17
     INTERPROCEDURAL_OPTIMIZATION TRUE

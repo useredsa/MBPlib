@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "mbp/sim/predictor.hpp"
+#include "mbp/core/predictor.hpp"
 
 namespace mbp {
 

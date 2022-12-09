@@ -5,7 +5,7 @@
 #include <vector>
 #include <random>
 
-#include "mbp/sim/predictor.hpp"
+#include "mbp/core/predictor.hpp"
 #include "mbp/utils/arithmetic.hpp"
 #include "mbp/utils/indexing.hpp"
 #include "nlohmann/json.hpp"

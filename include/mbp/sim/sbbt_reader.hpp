@@ -4,7 +4,7 @@
 #include <array>
 #include <string>
 
-#include "mbp/sim/predictor.hpp"
+#include "mbp/core/predictor.hpp"
 
 namespace mbp {
 

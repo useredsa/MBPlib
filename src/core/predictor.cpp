@@ -1,4 +1,4 @@
-#include "mbp/sim/predictor.hpp"
+#include "mbp/core/predictor.hpp"
 
 #include "nlohmann/json.hpp"
 

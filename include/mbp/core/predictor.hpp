@@ -5,7 +5,7 @@
 
 #include "nlohmann/json_fwd.hpp"
 
-#include "mbp/sim/branch.hpp"
+#include "mbp/core/branch.hpp"
 
 namespace mbp {
 
