@@ -29,9 +29,9 @@ struct Twobcgskew : Predictor {
   std::array<i2, (1 << MT)> meta;
   std::bitset<std::max(std::max(G0H, G1H), MH)> ghist;
   // Saved Values
-  uint64_t bimIdx, g0Idx, g1Idx, metaIdx;
+  uint64_t predictedIp, bimIdx, g0Idx, g1Idx, metaIdx;
   bool bimPred, g0Pred, g1Pred, metaPred;
-  bool majorityVote, prediction;
+  bool majorityVote, prediction, tracked = true;
 
   uint64_t bimHash(uint64_t ip) const { return XorFold(ip, BT); }
 
@@ -48,6 +48,10 @@ struct Twobcgskew : Predictor {
   }
 
   bool predict(uint64_t ip) override {
+    if (tracked == false && predictedIp == ip) return prediction;
+    tracked = false;
+    predictedIp = ip;
+
     bimIdx = bimHash(ip);
     g0Idx = g0Hash(ip);
     g1Idx = g1Hash(ip);
@@ -62,6 +66,9 @@ struct Twobcgskew : Predictor {
   }
 
   void train(const Branch& b) override {
+    // To update prediction values if not done already.
+    predict(b.ip());
+
     // Meta predictor is updated if both predictions are different.
     // It is strengthened if they are equal but the metaprediction was correct.
     if (majorityVote != bimPred) {
@@ -105,6 +112,7 @@ struct Twobcgskew : Predictor {
   void track(const Branch& b) override {
     ghist <<= 1;
     ghist[0] = b.isTaken();
+    tracked = true;
   }
 
   json metadata_stats() const override {

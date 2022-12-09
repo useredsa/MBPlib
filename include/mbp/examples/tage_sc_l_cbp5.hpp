@@ -19,19 +19,26 @@ void TrackOtherInst(uint64_t PC, const Branch& opType, bool taken,
 
 struct TageScL : Predictor {
   bool predicted;
+  uint64_t predictedIp;
+  bool tracked = true;
 
   TageScL() { tscl::ReInit(); };
 
   bool predict(uint64_t ip) override {
+    if (tracked == false && predictedIp == ip) return predicted;
+    tracked = false;
+    predictedIp = ip;
     return predicted = tscl::GetPrediction(ip);
   }
 
   void train(const Branch& b) override {
+    predict(b.ip());
     tscl::UpdatePredictor(b.ip(), b, b.isTaken(), predicted, b.target());
   }
 
   void track(const Branch& b) override {
     tscl::TrackOtherInst(b.ip(), b, b.isTaken(), b.target());
+    tracked = true;
   }
 
   json metadata_stats() const override {

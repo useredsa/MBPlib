@@ -85,8 +85,8 @@ json Simulate(Predictor* branchPredictor, const SimArgs& args) {
   Branch b;
   int64_t instrNum = 0;
   while ((instrNum = trace.nextBranch(b)) < stopAtInstr) {
-    bool predictedTaken = branchPredictor->predict(b.ip());
     if (b.isConditional()) {
+      bool predictedTaken = branchPredictor->predict(b.ip());
       branchPredictor->train(b);
       if (instrNum >= warmupInstrs) {
         numBranches += 1;

@@ -29,8 +29,16 @@ struct HashedPerceptron : Predictor {
   std::array<uint64_t, NUMT> idx;
   int sum;
   bool prediction;
+  bool tracked;
+  uint64_t predictedIp;
 
-  HashedPerceptron() : theta(10), misp(0), sum(0), prediction(false) {
+  HashedPerceptron()
+      : theta(10),
+        misp(0),
+        sum(0),
+        prediction(false),
+        tracked(true),
+        predictedIp(0) {
     hlen[0] = 0;
     ghistFold[0] = BitStreamXorFold(hlen[0], T);
     double power = MINH;
@@ -42,6 +50,10 @@ struct HashedPerceptron : Predictor {
   }
 
   bool predict(uint64_t ip) override {
+    if (tracked == false && predictedIp == ip) return prediction;
+    tracked = false;
+    predictedIp = ip;
+
     sum = 0;
     uint64_t ipfold = XorFold(ip, T);
     for (size_t i = 0; i < component.size(); ++i) {
@@ -79,6 +91,7 @@ struct HashedPerceptron : Predictor {
       unsigned outgoingBit = ghist[(ghistIdx + hlen[i]) % ghist.size()];
       ghistFold[i].shiftInAndOut(1, b.isTaken(), outgoingBit);
     }
+    tracked = true;
   }
 
   json metadata_stats() const override {
