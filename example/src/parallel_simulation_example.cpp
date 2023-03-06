@@ -4,103 +4,103 @@
 #include <mbp/sim/simulator.hpp>
 
 static constexpr mbp::Batage::TableSpec T00A = {
-    .ghistLen = 0, .idxWidth = 14, .tagWidth = 0, .ctrWidth = 3};
+    .ghistLen = 0, .idxWidth = 14, .tagWidth = 0};
 static constexpr mbp::Batage::TableSpec T01A = {
-    .ghistLen = 4, .idxWidth = 10, .tagWidth = 7, .ctrWidth = 3};
+    .ghistLen = 4, .idxWidth = 10, .tagWidth = 7};
 static constexpr mbp::Batage::TableSpec T02A = {
-    .ghistLen = 5, .idxWidth = 10, .tagWidth = 7, .ctrWidth = 3};
+    .ghistLen = 5, .idxWidth = 10, .tagWidth = 7};
 static constexpr mbp::Batage::TableSpec T03A = {
-    .ghistLen = 7, .idxWidth = 10, .tagWidth = 8, .ctrWidth = 3};
+    .ghistLen = 7, .idxWidth = 10, .tagWidth = 8};
 static constexpr mbp::Batage::TableSpec T04A = {
-    .ghistLen = 9, .idxWidth = 10, .tagWidth = 8, .ctrWidth = 3};
+    .ghistLen = 9, .idxWidth = 10, .tagWidth = 8};
 static constexpr mbp::Batage::TableSpec T05A = {
-    .ghistLen = 13, .idxWidth = 10, .tagWidth = 9, .ctrWidth = 3};
+    .ghistLen = 13, .idxWidth = 10, .tagWidth = 9};
 static constexpr mbp::Batage::TableSpec T06A = {
-    .ghistLen = 17, .idxWidth = 10, .tagWidth = 11, .ctrWidth = 3};
+    .ghistLen = 17, .idxWidth = 10, .tagWidth = 11};
 static constexpr mbp::Batage::TableSpec T07A = {
-    .ghistLen = 23, .idxWidth = 10, .tagWidth = 11, .ctrWidth = 3};
+    .ghistLen = 23, .idxWidth = 10, .tagWidth = 11};
 static constexpr mbp::Batage::TableSpec T08A = {
-    .ghistLen = 32, .idxWidth = 10, .tagWidth = 12, .ctrWidth = 3};
+    .ghistLen = 32, .idxWidth = 10, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T09A = {
-    .ghistLen = 43, .idxWidth = 10, .tagWidth = 12, .ctrWidth = 3};
+    .ghistLen = 43, .idxWidth = 10, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T10A = {
-    .ghistLen = 58, .idxWidth = 10, .tagWidth = 12, .ctrWidth = 3};
+    .ghistLen = 58, .idxWidth = 10, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T11A = {
-    .ghistLen = 78, .idxWidth = 10, .tagWidth = 13, .ctrWidth = 3};
+    .ghistLen = 78, .idxWidth = 10, .tagWidth = 13};
 static constexpr mbp::Batage::TableSpec T12A = {
-    .ghistLen = 105, .idxWidth = 10, .tagWidth = 13, .ctrWidth = 3};
+    .ghistLen = 105, .idxWidth = 10, .tagWidth = 13};
 static constexpr mbp::Batage::TableSpec T13A = {
-    .ghistLen = 141, .idxWidth = 9, .tagWidth = 17, .ctrWidth = 3};
+    .ghistLen = 141, .idxWidth = 9, .tagWidth = 17};
 static constexpr mbp::Batage::TableSpec T14A = {
-    .ghistLen = 191, .idxWidth = 9, .tagWidth = 17, .ctrWidth = 3};
+    .ghistLen = 191, .idxWidth = 9, .tagWidth = 17};
 static constexpr mbp::Batage::TableSpec T15A = {
-    .ghistLen = 257, .idxWidth = 9, .tagWidth = 17, .ctrWidth = 3};
+    .ghistLen = 257, .idxWidth = 9, .tagWidth = 17};
 
 static constexpr mbp::Batage::TableSpec T00B = {
-    .ghistLen = 0, .idxWidth = 13, .tagWidth = 0, .ctrWidth = 4};
+    .ghistLen = 0, .idxWidth = 13, .tagWidth = 0};
 static constexpr mbp::Batage::TableSpec T01B = {
-    .ghistLen = 4, .idxWidth = 9, .tagWidth = 7, .ctrWidth = 4};
+    .ghistLen = 4, .idxWidth = 9, .tagWidth = 7};
 static constexpr mbp::Batage::TableSpec T02B = {
-    .ghistLen = 5, .idxWidth = 9, .tagWidth = 7, .ctrWidth = 4};
+    .ghistLen = 5, .idxWidth = 9, .tagWidth = 7};
 static constexpr mbp::Batage::TableSpec T03B = {
-    .ghistLen = 7, .idxWidth = 9, .tagWidth = 8, .ctrWidth = 4};
+    .ghistLen = 7, .idxWidth = 9, .tagWidth = 8};
 static constexpr mbp::Batage::TableSpec T04B = {
-    .ghistLen = 9, .idxWidth = 9, .tagWidth = 8, .ctrWidth = 4};
+    .ghistLen = 9, .idxWidth = 9, .tagWidth = 8};
 static constexpr mbp::Batage::TableSpec T05B = {
-    .ghistLen = 13, .idxWidth = 9, .tagWidth = 9, .ctrWidth = 4};
+    .ghistLen = 13, .idxWidth = 9, .tagWidth = 9};
 static constexpr mbp::Batage::TableSpec T06B = {
-    .ghistLen = 17, .idxWidth = 9, .tagWidth = 11, .ctrWidth = 4};
+    .ghistLen = 17, .idxWidth = 9, .tagWidth = 11};
 static constexpr mbp::Batage::TableSpec T07B = {
-    .ghistLen = 23, .idxWidth = 9, .tagWidth = 11, .ctrWidth = 4};
+    .ghistLen = 23, .idxWidth = 9, .tagWidth = 11};
 static constexpr mbp::Batage::TableSpec T08B = {
-    .ghistLen = 32, .idxWidth = 9, .tagWidth = 12, .ctrWidth = 4};
+    .ghistLen = 32, .idxWidth = 9, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T09B = {
-    .ghistLen = 41, .idxWidth = 9, .tagWidth = 12, .ctrWidth = 4};
+    .ghistLen = 41, .idxWidth = 9, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T10B = {
-    .ghistLen = 51, .idxWidth = 9, .tagWidth = 12, .ctrWidth = 4};
+    .ghistLen = 51, .idxWidth = 9, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T11B = {
-    .ghistLen = 61, .idxWidth = 9, .tagWidth = 13, .ctrWidth = 4};
+    .ghistLen = 61, .idxWidth = 9, .tagWidth = 13};
 static constexpr mbp::Batage::TableSpec T12B = {
-    .ghistLen = 83, .idxWidth = 9, .tagWidth = 13, .ctrWidth = 4};
+    .ghistLen = 83, .idxWidth = 9, .tagWidth = 13};
 static constexpr mbp::Batage::TableSpec T13B = {
-    .ghistLen = 105, .idxWidth = 8, .tagWidth = 17, .ctrWidth = 4};
+    .ghistLen = 105, .idxWidth = 8, .tagWidth = 17};
 static constexpr mbp::Batage::TableSpec T14B = {
-    .ghistLen = 138, .idxWidth = 8, .tagWidth = 17, .ctrWidth = 4};
+    .ghistLen = 138, .idxWidth = 8, .tagWidth = 17};
 static constexpr mbp::Batage::TableSpec T15B = {
-    .ghistLen = 204, .idxWidth = 8, .tagWidth = 17, .ctrWidth = 4};
+    .ghistLen = 204, .idxWidth = 8, .tagWidth = 17};
 
 static constexpr mbp::Batage::TableSpec T00C = {
-    .ghistLen = 0, .idxWidth = 14, .tagWidth = 0, .ctrWidth = 5};
+    .ghistLen = 0, .idxWidth = 14, .tagWidth = 0};
 static constexpr mbp::Batage::TableSpec T01C = {
-    .ghistLen = 8, .idxWidth = 9, .tagWidth = 7, .ctrWidth = 5};
+    .ghistLen = 8, .idxWidth = 9, .tagWidth = 7};
 static constexpr mbp::Batage::TableSpec T02C = {
-    .ghistLen = 14, .idxWidth = 9, .tagWidth = 7, .ctrWidth = 5};
+    .ghistLen = 14, .idxWidth = 9, .tagWidth = 7};
 static constexpr mbp::Batage::TableSpec T03C = {
-    .ghistLen = 20, .idxWidth = 9, .tagWidth = 8, .ctrWidth = 5};
+    .ghistLen = 20, .idxWidth = 9, .tagWidth = 8};
 static constexpr mbp::Batage::TableSpec T04C = {
-    .ghistLen = 24, .idxWidth = 10, .tagWidth = 8, .ctrWidth = 5};
+    .ghistLen = 24, .idxWidth = 10, .tagWidth = 8};
 static constexpr mbp::Batage::TableSpec T05C = {
-    .ghistLen = 30, .idxWidth = 10, .tagWidth = 9, .ctrWidth = 5};
+    .ghistLen = 30, .idxWidth = 10, .tagWidth = 9};
 static constexpr mbp::Batage::TableSpec T06C = {
-    .ghistLen = 34, .idxWidth = 10, .tagWidth = 11, .ctrWidth = 5};
+    .ghistLen = 34, .idxWidth = 10, .tagWidth = 11};
 static constexpr mbp::Batage::TableSpec T07C = {
-    .ghistLen = 46, .idxWidth = 10, .tagWidth = 11, .ctrWidth = 5};
+    .ghistLen = 46, .idxWidth = 10, .tagWidth = 11};
 static constexpr mbp::Batage::TableSpec T08C = {
-    .ghistLen = 55, .idxWidth = 10, .tagWidth = 12, .ctrWidth = 5};
+    .ghistLen = 55, .idxWidth = 10, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T09C = {
-    .ghistLen = 66, .idxWidth = 10, .tagWidth = 12, .ctrWidth = 5};
+    .ghistLen = 66, .idxWidth = 10, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T10C = {
-    .ghistLen = 81, .idxWidth = 10, .tagWidth = 12, .ctrWidth = 5};
+    .ghistLen = 81, .idxWidth = 10, .tagWidth = 12};
 static constexpr mbp::Batage::TableSpec T11C = {
-    .ghistLen = 101, .idxWidth = 10, .tagWidth = 13, .ctrWidth = 5};
+    .ghistLen = 101, .idxWidth = 10, .tagWidth = 13};
 static constexpr mbp::Batage::TableSpec T12C = {
-    .ghistLen = 128, .idxWidth = 10, .tagWidth = 13, .ctrWidth = 5};
+    .ghistLen = 128, .idxWidth = 10, .tagWidth = 13};
 static constexpr mbp::Batage::TableSpec T13C = {
-    .ghistLen = 164, .idxWidth = 10, .tagWidth = 17, .ctrWidth = 5};
+    .ghistLen = 164, .idxWidth = 10, .tagWidth = 17};
 static constexpr mbp::Batage::TableSpec T14C = {
-    .ghistLen = 214, .idxWidth = 10, .tagWidth = 17, .ctrWidth = 5};
+    .ghistLen = 214, .idxWidth = 10, .tagWidth = 17};
 static constexpr mbp::Batage::TableSpec T15C = {
-    .ghistLen = 280, .idxWidth = 10, .tagWidth = 17, .ctrWidth = 5};
+    .ghistLen = 280, .idxWidth = 10, .tagWidth = 17};
 
 static constexpr int seed = 158715;
 
