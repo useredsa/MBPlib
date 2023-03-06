@@ -40,6 +40,12 @@ constexpr int32_t i32_supd(int32_t reg, bool dir, size_t width) {
 
 constexpr uint32_t u32_sll(uint32_t reg, uint32_t amm, size_t width) {
   reg <<= amm;
+  reg &= (uint32_t{1} << width) - 1;
+  return reg;
+}
+
+constexpr uint32_t u32_csll(uint32_t reg, uint32_t amm, size_t width) {
+  reg <<= amm;
   reg ^= reg >> width;
   reg &= (uint32_t{1} << width) - 1;
   return reg;
