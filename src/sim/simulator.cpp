@@ -1,7 +1,6 @@
 #include "mbp/sim/simulator.hpp"
 
-#include <errno.h>
-
+#include <cerrno>
 #include <chrono>
 #include <cstdint>
 #include <cstdlib>
@@ -103,7 +102,7 @@ json Simulate(Predictor* branchPredictor, const SimArgs& args) {
       std::chrono::duration<double>(endTime - startTime).count();
   // See Note 0.
   int64_t metricInstr =
-      simInstr == 0 ? trace.lastInstrRead() - warmupInstrs : simInstr;
+      simInstr == 0 ? trace.numInstructions() - warmupInstrs : simInstr;
   if (simInstr != 0 && trace.eof()) {
     std::string errMsg = "The trace did not contain " +
                          std::to_string(simInstr) + " instructions, only " +
@@ -203,7 +202,7 @@ json ParallelSim(const std::vector<Predictor*>& predictor,
       std::chrono::duration<double>(endTime - startTime).count();
   // See Note 0.
   int64_t metricInstr =
-      simInstr == 0 ? trace.lastInstrRead() - warmupInstrs : simInstr;
+      simInstr == 0 ? trace.numInstructions() - warmupInstrs : simInstr;
   if (simInstr != 0 && trace.eof()) {
     std::string errMsg = "The trace did not contain " +
                          std::to_string(simInstr) + " instructions, only " +
@@ -278,7 +277,7 @@ json Compare(std::array<Predictor*, 2> predictor, const SimArgs& args) {
       std::chrono::duration<double>(endTime - startTime).count();
   // See Note 0.
   int64_t metricInstr =
-      simInstr == 0 ? trace.lastInstrRead() - warmupInstrs : simInstr;
+      simInstr == 0 ? trace.numInstructions() - warmupInstrs : simInstr;
   if (simInstr != 0 && trace.eof()) {
     std::string errMsg = "The trace did not contain " +
                          std::to_string(simInstr) + " instructions, only " +

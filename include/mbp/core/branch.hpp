@@ -11,7 +11,7 @@ namespace mbp {
  *
  * The branch type is determined by its opcode,
  * which is an abstract representation of possible branch instructions.
- * The opcode encodes the base type of the branch (JMP, RET or CALL)
+ * The opcode encodes the base type of the branch (JUMP, RET or CALL)
  * as well as whether the branch is conditional and/or indirect.
  */
 class Branch {
@@ -23,17 +23,17 @@ class Branch {
     // Number of possible opcodes.
     NUMBER = 0b10000,
     // Bitmask corresponding to the base type.
-    TYPE = 0b0011,
+    TYPE = 0b1100,
     // Bit for conditional branches.
-    CND = 0b0100,
+    CND = 0b0001,
     // Bit for indirect branches.
-    IND = 0b1000,
-    // JMP base type.
-    JMP = 0b0000,
+    IND = 0b0010,
+    // JUMP base type.
+    JUMP = 0b0000,
     // RET (return from function) base type.
-    RET = 0b0001,
+    RET = 0b0100,
     // CALL (function) base type.
-    CALL = 0b0010,
+    CALL = 0b1000,
   };
 
   Branch() = default;

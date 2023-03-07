@@ -13,6 +13,10 @@ namespace mbp {
  */
 class SbbtReader {
  public:
+  static constexpr unsigned SBBT_VERSION_MAJOR = 1;
+  static constexpr unsigned SBBT_VERSION_MINOR = 0;
+  static constexpr unsigned SBBT_VERSION_PATCH = 0;
+
   SbbtReader(const SbbtReader& other) = delete;
   SbbtReader(const std::string& trace);
   ~SbbtReader();
@@ -32,11 +36,30 @@ class SbbtReader {
   int64_t nextBranch(Branch& b);
 
   /**
+   * Returns the number of instructions specified in the trace header.
+   */
+  constexpr uint64_t numInstructions() const { return header_.numInstructions; }
+
+  /**
+   * Returns the number of branches specified in the trace header.
+   */
+  constexpr uint64_t numBranches() const { return header_.numBranches; }
+
+  /**
    * Returns the instruction number of the last branch that was read.
    */
   constexpr int64_t lastInstrRead() const { return instrCtr_; }
 
  private:
+  struct SbbtHeader {
+    uint64_t sbbtMark;
+    uint64_t numInstructions;
+    uint64_t numBranches;
+  };
+  static_assert(sizeof(SbbtHeader) == 24);
+  static constexpr uint64_t SBBT_MARK_WO_VERSION_MASK = 0x000000FFFFFFFFFFULL;
+  static constexpr uint64_t SBBT_MARK_WO_VERSION = 0x0000000A54424253ULL;
+  static constexpr uint64_t SBBT_MARK_WITH_VERSION = 0x0000010A54424253ULL;
   // Read size equals the Linux pipe buffer size, which is 4 pages.
   static constexpr size_t READ_SIZE = 1 << 16;
   static constexpr size_t SIZEOF_SBBT_BRANCH = 16;
@@ -50,6 +73,7 @@ class SbbtReader {
   size_t bufferStart_ = 0;
   size_t bufferEnd_ = 0;
   int64_t instrCtr_ = 0;
+  SbbtHeader header_;
 };
 
 }  // namespace mbp

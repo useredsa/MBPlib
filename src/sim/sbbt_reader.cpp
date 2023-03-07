@@ -1,85 +1,116 @@
 #include "mbp/sim/sbbt_reader.hpp"
 
-#include <errno.h>
-
 #include <cstdio>
+#include <cerrno>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <sstream>
 
 namespace mbp {
 
 struct SbbtBranch {
-  unsigned ninstr : 12;
-  unsigned long long ip : 52;
-  unsigned char padding : 7;
-  unsigned type : 2;
-  unsigned conditional : 1;
-  unsigned direct : 1;
+  unsigned opcode : 4;
+  unsigned padding : 7;
   unsigned outcome : 1;
+  unsigned long long ip : 52;
+  unsigned ninstr : 12;
   unsigned long long target : 52;
 };
+
+static constexpr uint64_t sign_extend_ip(uint64_t ip) {
+  constexpr uint64_t lastBit = uint64_t{1} << 51;
+  // If (ip & lastBit) == 0, then ip is unchanged,
+  // otherwise lastBit and the following bits get set to 1.
+  return (ip ^ lastBit) - lastBit;
+}
 
 SbbtReader::SbbtReader(const std::string& trace) {
   // The trace can be either uncompressed...
   size_t last_dot = trace.find_last_of('.');
   // Note: we check that last_dot != 0 because we will write last_dot-1.
   if (last_dot == trace.npos || last_dot == 0) {
-    throw std::invalid_argument("Cannot recognize trace format (no entension)");
+    throw std::invalid_argument("SbbtReader: file '" + trace +
+                                "' does not have extension.");
   }
   std::string extension = trace.substr(last_dot);
   if (extension == ".sbbt") {
     trace_ = fopen(trace.c_str(), "r");
     if (trace_ == nullptr) {
-      throw std::system_error(errno, std::generic_category(),
-                              "trace fopen failed");
+      throw std::system_error(errno, std::generic_category(), "fopen failed");
     }
-    return;
-  }
-  // Or compressed using a variety of tools: gzip, xz, zstd or lz4.
-  last_dot = trace.find_last_of('.', last_dot - 1);
-  if (last_dot == trace.npos) {
-    throw std::invalid_argument("Cannot recognize trace format (not sbbt)");
-  }
-  extension = trace.substr(last_dot);
-  if (extension == ".sbbt.xz") {
-    std::string cmd = "xz --decompress --keep --stdout " + trace;
-    trace_ = popen(cmd.c_str(), "r");
-    if (trace_ == nullptr) {
-      throw std::system_error(errno, std::generic_category(),
-                              "xz popen failed");
+  } else {
+    // Or compressed using a variety of tools: gzip, xz, zstd or lz4.
+    last_dot = trace.find_last_of('.', last_dot - 1);
+    if (last_dot == trace.npos) {
+      throw std::invalid_argument(
+          "SbbtReader: cannot recognize file type of '" + trace + "'.");
     }
-    return;
-  }
-  if (extension == ".sbbt.zst") {
-    std::string cmd = "zstd --decompress --stdout --quiet " + trace;
-    trace_ = popen(cmd.c_str(), "r");
-    if (trace_ == nullptr) {
-      throw std::system_error(errno, std::generic_category(),
-                              "zstd popen failed");
+    extension = trace.substr(last_dot);
+    if (extension == ".sbbt.xz") {
+      std::string cmd = "xz --decompress --keep --stdout " + trace;
+      trace_ = popen(cmd.c_str(), "r");
+      if (trace_ == nullptr) {
+        throw std::system_error(errno, std::generic_category(),
+                                "xz popen failed");
+      }
+    } else if (extension == ".sbbt.zst") {
+      std::string cmd = "zstd --decompress --stdout --quiet " + trace;
+      trace_ = popen(cmd.c_str(), "r");
+      if (trace_ == nullptr) {
+        throw std::system_error(errno, std::generic_category(),
+                                "zstd popen failed");
+      }
+    } else if (extension == ".sbbt.lz4") {
+      std::string cmd = "lz4 --decompress --stdout --quiet " + trace;
+      trace_ = popen(cmd.c_str(), "r");
+      if (trace_ == nullptr) {
+        throw std::system_error(errno, std::generic_category(),
+                                "lz4 popen failed");
+      }
+    } else if (extension == ".sbbt.gz") {
+      std::string cmd = "gzip --decompress --stdout --keep " + trace;
+      trace_ = popen(cmd.c_str(), "r");
+      if (trace_ == nullptr) {
+        throw std::system_error(errno, std::generic_category(),
+                                "gzip popen failed");
+      }
+    } else {
+      throw std::invalid_argument("SbbtReader: File type of '" + trace +
+                                  "' not supported.");
     }
-    return;
   }
-  if (extension == ".sbbt.lz4") {
-    std::string cmd = "lz4 --decompress --stdout --quiet " + trace;
-    trace_ = popen(cmd.c_str(), "r");
-    if (trace_ == nullptr) {
-      throw std::system_error(errno, std::generic_category(),
-                              "lz4 popen failed");
+
+  // Read header and check version number.
+  while (bufferEnd_ - bufferStart_ < sizeof(SbbtHeader)) {
+    if (std::feof(trace_)) {
+      throw std::invalid_argument("SbbtReader: file '" + trace +
+                                  "' is empty or too small.");
     }
-    return;
-  }
-  if (extension == ".sbbt.gz") {
-    std::string cmd = "gzip --decompress --stdout --keep " + trace;
-    trace_ = popen(cmd.c_str(), "r");
-    if (trace_ == nullptr) {
-      throw std::system_error(errno, std::generic_category(),
-                              "gzip popen failed");
+    size_t len = std::fread(buffer_.data() + bufferEnd_, sizeof(char),
+                            READ_SIZE, trace_);
+    bufferEnd_ += len;
+    if (std::ferror(trace_)) {
+      throw std::runtime_error(std::strerror(errno));
     }
-    return;
   }
-  throw std::invalid_argument("Cannot recognize trace format");
+  memcpy(&header_, buffer_.data(), sizeof(SbbtHeader));
+  bufferStart_ += sizeof(SbbtHeader);
+  uint64_t markWoVersion = header_.sbbtMark & SBBT_MARK_WO_VERSION_MASK;
+  if (markWoVersion != SBBT_MARK_WO_VERSION) {
+    std::stringstream stream;
+    stream << "SbbtReader: Invalid header " << std::hex << markWoVersion
+           << " (expected: " << SBBT_MARK_WO_VERSION << ").";
+    throw std::invalid_argument(stream.str());
+  }
+  if (header_.sbbtMark != SBBT_MARK_WITH_VERSION) {
+    std::stringstream stream;
+    stream << "SbbtReader: Unsupported SBBT format version " << std::hex
+           << (header_.sbbtMark & ~SBBT_MARK_WO_VERSION_MASK)
+           << " (expected 0x000001).";
+    throw std::invalid_argument(stream.str());
+  }
 }
 
 SbbtReader::~SbbtReader() {
@@ -117,14 +148,9 @@ int64_t SbbtReader::nextBranch(Branch& b) {
       reinterpret_cast<SbbtBranch*>(buffer_.data() + bufferStart_);
   bufferStart_ += sizeof(SbbtBranch);
   instrCtr_ += srcBranch->ninstr;
-  // TODO(useredsa) optimize trace layout to make a simple copy
-  Branch::OpCode opcode = static_cast<Branch::OpCode>(srcBranch->type);
-  if (srcBranch->conditional)
-    opcode = static_cast<Branch::OpCode>(opcode | Branch::CND);
-  if (!srcBranch->direct)
-    opcode = static_cast<Branch::OpCode>(opcode | Branch::IND);
-  b = Branch(srcBranch->ip, srcBranch->target, opcode,
-             static_cast<uint8_t>(srcBranch->outcome));
+  b = Branch{sign_extend_ip(srcBranch->ip), sign_extend_ip(srcBranch->target),
+             static_cast<Branch::OpCode>(srcBranch->opcode),
+             static_cast<uint8_t>(srcBranch->outcome)};
   return instrCtr_;
 }
 

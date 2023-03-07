@@ -21,6 +21,16 @@ target_compile_options(mbp_trace_reader PRIVATE
   "-Wall" "-O3" "-march=native" "-mtune=native"
 )
 
+add_library(mbp_sbbt_writer SHARED sim/sbbt_writer.cpp)
+target_include_directories(mbp_sbbt_writer PUBLIC ../include)
+set_target_properties(mbp_sbbt_writer PROPERTIES
+  INTERPROCEDURAL_OPTIMIZATION TRUE
+)
+target_compile_features(mbp_sbbt_writer PUBLIC cxx_std_17)
+target_compile_options(mbp_sbbt_writer PRIVATE
+  "-Wall" "-O3" "-march=native" "-mtune=native"
+)
+
 add_library(mbp_sim SHARED sim/simulator.cpp)
 target_link_libraries(mbp_sim PRIVATE mbp_trace_reader)
 target_include_directories(mbp_sim PUBLIC ../include)
