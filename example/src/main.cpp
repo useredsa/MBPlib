@@ -3,7 +3,7 @@
 #include "tage_specs.hpp"
 #include "batage_specs.hpp"
 
-auto branchPredictor = PREDICTOR;
+static auto branchPredictor = PREDICTOR;
 
 int main(int argc, char** argv) {
   return mbp::SimMain(argc, argv, &branchPredictor);

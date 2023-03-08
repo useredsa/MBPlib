@@ -55,7 +55,7 @@ endfunction()
 
 # Historical Single Component Predictors
 # Gshare is considered the best single component predictor.
-add_mbp_sim(bimodal_64KB  "mbp::Bimodal<18>{}")
+add_mbp_sim(bimodal_64KB "mbp::Bimodal<18>{}")
 add_mbp_sim(nmodal_3_64KB "mbp::Nmodal<3, 17>{}")
 add_mbp_sim(nmodal_4_64KB "mbp::Nmodal<4, 17>{}")
 add_mbp_sim(gshare_32KB "mbp::Gshare<25, 17>{}")
