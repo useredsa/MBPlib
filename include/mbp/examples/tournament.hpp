@@ -12,12 +12,6 @@
 
 namespace mbp {
 
-// TODO(useredsa): templated versions are faster
-// because the compiler optimizes better.
-// Remove the BimodalTournament and GshareTournament classes
-// and instead provide a templated version and a runtime version
-// of the Tournament predictor.
-
 template <typename BP0, typename BP1, int T = 14>
 struct BimodalTournament : Predictor {
   std::array<i2, (1 << T)> table;
