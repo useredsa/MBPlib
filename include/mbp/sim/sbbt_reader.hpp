@@ -6,6 +6,17 @@
 
 #include "mbp/core/predictor.hpp"
 
+#ifdef __GNUC__
+static_assert(__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__,
+              "System must be little endian\n");
+#elif __clang__
+static_assert(__LITTLE_ENDIAN__, "System must be little endian\n");
+#else
+#pragma message(                                 \
+    "Cannot determine endianess of the system. " \
+    "Check that the system is little endian.")
+#endif
+
 namespace mbp {
 
 /**
