@@ -1,8 +1,9 @@
 #ifndef MBP_SIMULATOR_HPP_
 #define MBP_SIMULATOR_HPP_
 
-#include <vector>
 #include <string>
+#include <vector>
+
 #include "mbp/core/predictor.hpp"
 
 namespace mbp {

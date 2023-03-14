@@ -1,7 +1,7 @@
-#include "mbp/core/branch.hpp"
-
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+
+#include "mbp/core/branch.hpp"
 
 namespace mbp {
 

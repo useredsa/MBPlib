@@ -1,5 +1,5 @@
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <mbp/examples/mbp_examples.hpp>
 #include <mbp/sim/simulator.hpp>
 

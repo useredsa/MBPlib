@@ -1,7 +1,8 @@
 #include <mbp/examples/mbp_examples.hpp>
 #include <mbp/sim/simulator.hpp>
-#include "tage_specs.hpp"
+
 #include "batage_specs.hpp"
+#include "tage_specs.hpp"
 
 static auto branchPredictor = PREDICTOR;
 

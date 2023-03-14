@@ -1,8 +1,8 @@
 #ifndef MBP_ARITHMETIC_HPP_
 #define MBP_ARITHMETIC_HPP_
 
-#include <cstdint>
 #include <cassert>
+#include <cstdint>
 
 namespace mbp {
 

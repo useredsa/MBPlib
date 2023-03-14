@@ -1,12 +1,12 @@
-#include "mbp/sim/sbbt_reader.hpp"
-
-#include <cstdio>
 #include <cerrno>
+#include <cstdio>
 #include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <limits>
 #include <sstream>
+
+#include "mbp/sim/sbbt_reader.hpp"
 
 namespace mbp {
 

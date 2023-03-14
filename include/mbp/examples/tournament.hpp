@@ -6,8 +6,8 @@
 #include <memory>
 
 #include "mbp/core/predictor.hpp"
-#include "mbp/utils/saturated_reg.hpp"
 #include "mbp/utils/indexing.hpp"
+#include "mbp/utils/saturated_reg.hpp"
 #include "nlohmann/json.hpp"
 
 namespace mbp {
@@ -110,12 +110,11 @@ struct TournamentPred : Predictor {
   std::array<bool, 2> prediction;
 
   TournamentPred(std::unique_ptr<Predictor> meta,
-                 std::unique_ptr<Predictor> bp0,
-                 std::unique_ptr<Predictor> bp1) 
-    : meta(std::move(meta)),
-      bp0(std::move(bp0)),
-      bp1(std::move(bp1)),
-      tracked(true) {}
+                 std::unique_ptr<Predictor> bp0, std::unique_ptr<Predictor> bp1)
+      : meta(std::move(meta)),
+        bp0(std::move(bp0)),
+        bp1(std::move(bp1)),
+        tracked(true) {}
 
   bool predict(uint64_t ip) override {
     if (predictedIp == ip && tracked == false) return prediction[provider];
@@ -132,8 +131,8 @@ struct TournamentPred : Predictor {
     bp0->train(b);
     bp1->train(b);
     if (prediction[0] != prediction[1]) {
-      Branch metaBranch = {
-        b.ip(), b.target(), b.opcode(), prediction[1] == b.isTaken()};
+      Branch metaBranch = {b.ip(), b.target(), b.opcode(),
+                           prediction[1] == b.isTaken()};
       meta->train(metaBranch);
     }
   }

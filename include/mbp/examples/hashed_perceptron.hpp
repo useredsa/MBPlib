@@ -5,8 +5,8 @@
 #include <vector>
 
 #include "mbp/core/predictor.hpp"
-#include "mbp/utils/saturated_reg.hpp"
 #include "mbp/utils/indexing.hpp"
+#include "mbp/utils/saturated_reg.hpp"
 #include "nlohmann/json.hpp"
 
 namespace mbp {

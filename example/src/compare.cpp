@@ -1,8 +1,9 @@
 #include <iostream>
 #include <mbp/examples/mbp_examples.hpp>
 #include <mbp/sim/simulator.hpp>
-#include "tage_specs.hpp"
+
 #include "batage_specs.hpp"
+#include "tage_specs.hpp"
 
 auto branchPredictor0 = PREDICTOR0;
 auto branchPredictor1 = PREDICTOR1;

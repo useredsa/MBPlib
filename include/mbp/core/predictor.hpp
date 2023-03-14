@@ -3,9 +3,8 @@
 
 #include <cstdint>
 
-#include "nlohmann/json_fwd.hpp"
-
 #include "mbp/core/branch.hpp"
+#include "nlohmann/json_fwd.hpp"
 
 namespace mbp {
 

@@ -1,5 +1,3 @@
-#include "mbp/sim/simulator.hpp"
-
 #include <cerrno>
 #include <chrono>
 #include <cstdint>
@@ -7,9 +5,9 @@
 #include <iostream>
 #include <limits>
 
-#include "nlohmann/json.hpp"
-
 #include "mbp/sim/sbbt_reader.hpp"
+#include "mbp/sim/simulator.hpp"
+#include "nlohmann/json.hpp"
 
 namespace mbp {
 

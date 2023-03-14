@@ -1,5 +1,4 @@
 #include "mbp/core/predictor.hpp"
-
 #include "nlohmann/json.hpp"
 
 namespace mbp {
