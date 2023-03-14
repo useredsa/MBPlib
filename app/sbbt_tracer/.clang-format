@@ -1,0 +1,10 @@
+---
+Language: Cpp
+BasedOnStyle: Google
+Standard: c++17
+SortIncludes: false
+AlignAfterOpenBracket: DontAlign
+BinPackArguments: false
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false
+...
