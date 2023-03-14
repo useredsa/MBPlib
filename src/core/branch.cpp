@@ -25,8 +25,8 @@ std::ostream& operator<<(std::ostream& os, Branch::OpCode opcode) {
 std::ostream& operator<<(std::ostream& os, const Branch& b) {
   std::ios_base::fmtflags f(os.flags());
   os << std::hex;
-  os << "0x" << std::setw(8) << std::setfill('0') << b.ip();
-  os << " 0x" << std::setw(8) << std::setfill('0') << b.target();
+  os << "0x" << std::setw(16) << std::setfill('0') << b.ip();
+  os << " 0x" << std::setw(16) << std::setfill('0') << b.target();
   os << ' ' << b.opcode() << (b.isTaken() ? " TAKEN" : " NOT_TAKEN");
   os.flags(f);
   return os;

@@ -29,6 +29,7 @@ class SbbtReader {
   static constexpr unsigned SBBT_VERSION_PATCH = 0;
 
   SbbtReader(const SbbtReader& other) = delete;
+  SbbtReader(SbbtReader&& other);
   SbbtReader(const std::string& trace);
   ~SbbtReader();
 
@@ -74,16 +75,15 @@ class SbbtReader {
   // Read size equals the Linux pipe buffer size, which is 4 pages.
   static constexpr size_t READ_SIZE = 1 << 16;
   static constexpr size_t SIZEOF_SBBT_BRANCH = 16;
-  friend struct SbbtBranch;
 
   // The size of buffer_ is chosen so that
   // if we do not have enough bytes to return a branch to the user,
   // a reading of size READ_SIZE is always possible.
   std::array<char, READ_SIZE + SIZEOF_SBBT_BRANCH> buffer_;
-  FILE* trace_ = nullptr;
-  size_t bufferStart_ = 0;
-  size_t bufferEnd_ = 0;
-  int64_t instrCtr_ = 0;
+  FILE* trace_;
+  size_t bufferStart_;
+  size_t bufferEnd_;
+  int64_t instrCtr_;
   SbbtHeader header_;
 };
 

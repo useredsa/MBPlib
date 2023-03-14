@@ -26,7 +26,13 @@ static constexpr uint64_t sign_extend_ip(uint64_t ip) {
   return (ip ^ lastBit) - lastBit;
 }
 
-SbbtReader::SbbtReader(const std::string& trace) {
+SbbtReader::SbbtReader(const std::string& trace)
+    : buffer_{},
+      trace_(nullptr),
+      bufferStart_(0),
+      bufferEnd_(0),
+      instrCtr_(0),
+      header_{} {
   // The trace can be either uncompressed...
   size_t last_dot = trace.find_last_of('.');
   // Note: we check that last_dot != 0 because we will write last_dot-1.
@@ -111,6 +117,20 @@ SbbtReader::SbbtReader(const std::string& trace) {
            << " (expected 0x000001).";
     throw std::invalid_argument(stream.str());
   }
+}
+
+SbbtReader::SbbtReader(SbbtReader&& other)
+    : buffer_(other.buffer_),
+      trace_(other.trace_),
+      bufferStart_(other.bufferStart_),
+      bufferEnd_(other.bufferEnd_),
+      instrCtr_(other.instrCtr_),
+      header_(other.header_) {
+  other.trace_ = nullptr;
+  other.bufferStart_ = 0;
+  other.bufferEnd_ = 0;
+  other.instrCtr_ = 0;
+  other.header_ = {};
 }
 
 SbbtReader::~SbbtReader() {
