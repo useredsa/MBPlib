@@ -65,7 +65,7 @@ SimArgs ParseCmdLineArgs(int argc, char** argv) {
  * this makes the mpki exactly proportional to the mispredictions.
  */
 
-constexpr size_t MAX_NUM_LISTED_BRANCHES = 35;
+constexpr size_t MAX_NUM_LISTED_BRANCHES = 20;
 
 json Simulate(Predictor* branchPredictor, const SimArgs& args) {
   const auto& [tracepath, warmupInstrs, simInstr, stopAtInstr] = args;
@@ -130,8 +130,6 @@ json Simulate(Predictor* branchPredictor, const SimArgs& args) {
         {"ip", ip},
         {"occurrences", inf.occurrences},
         {"mpki", 1000.0 * inf.misses / metricInstr},
-        {"accuracy",
-         static_cast<double>(inf.occurrences - inf.misses) / inf.occurrences},
     };
     halfMispredictionsJson.emplace_back(std::move(j));
   }
