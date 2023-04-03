@@ -25,27 +25,9 @@ struct Tage : Predictor {
     unsigned utlWidth;
   };
 
+  static constexpr int LOG_META_SIZE = 8;
   using Entries = std::vector<Entry*>;
   using Tags = std::vector<uint32_t>;
-
-  static size_t LastMatch(const Entries& entry, const Tags& tag) {
-    // Provider component.
-    size_t i = entry.size() - 1;
-    while (i > 0 && entry[i]->tag != tag[i]) --i;
-    return i;
-  }
-
-  // TODO(useredsa): Include metapredictor for tage
-  // static std::pair<int, int> LastTwoMatches(const Entries& entry,
-  //                                           const Tags& tag) {
-  //   // Provider component.
-  //   int p = entry.size() - 1;
-  //   while (p > 0 && entry[p]->tag != tag[p]) --p;
-  //   // Alternate component.
-  //   int alt = p - 1;
-  //   while (alt > 0 && entry[alt]->tag != tag[alt]) alt--;
-  //   return {p, alt};
-  // }
 
   // Table Specification
   std::vector<uint32_t> ghistLen;
@@ -59,12 +41,13 @@ struct Tage : Predictor {
   std::vector<BitStreamXorFold> tagFold;
   std::vector<char> ghist;
   size_t ghistIdx;
+  std::array<i5, (1 << LOG_META_SIZE)> meta;
   // Saved Values
   Entries entry;
   Tags tag;
+  int m0, m1, prov;
+  bool predM0, predM1, m0IsWeak, m1IsWeak, prediction;
   uint64_t entriesIp;
-  size_t prov;
-  bool prediction;
   bool updatedGhist;
 
   Tage(const std::vector<TableSpec>& specs)
@@ -81,9 +64,7 @@ struct Tage : Predictor {
         entry(specs.size()),
         tag(specs.size()),
         entriesIp(0),
-        prov(0),
-        prediction(false),
-        updatedGhist(false) {
+        updatedGhist(true) {
     unsigned maxGhistLen = 0;
     for (auto [hlen, iwidth, twidth, cwidth, uwidth] : specs) {
       table.emplace_back(1 << iwidth);
@@ -108,25 +89,51 @@ struct Tage : Predictor {
     }
   }
 
+  uint64_t metahash() const {
+    return XorFold(m0, LOG_META_SIZE - 1) << 1 | m1IsWeak;
+  }
+
   bool predict(uint64_t ip) override {
     if (entriesIp == ip && updatedGhist == false) return prediction;
     entriesIp = ip;
     updatedGhist = false;
 
     computeEntriesAndTags(ip);
-    prov = LastMatch(entry, tag);
-    return prediction = entry[prov]->ctr >= 0;
+    // Compute furthest and second furthest matching components
+    m0 = entry.size() - 1;
+    while (m0 > 0 && entry[m0]->tag != tag[m0]) --m0;
+    predM0 = entry[m0]->ctr >= 0;
+    m0IsWeak = entry[m0]->ctr == -1 || entry[m0]->ctr == 0;
+    m1 = m0 - 1;
+    while (m1 > 0 && entry[m1]->tag != tag[m1]) --m1;
+    predM1 = m0 > 0 ? entry[m1]->ctr >= 0 : 0;
+    m1IsWeak = m0 > 0 && (entry[m1]->ctr == -1 || entry[m1]->ctr == 0);
+    // Choose between both
+    prov = m0 > 0 && m0IsWeak && meta[metahash()] >= 0 ? m1 : m0;
+    return prediction = (entry[prov]->ctr >= 0);
   }
 
   void train(const Branch& b) override {
     predict(b.ip());
 
-    entry[prov]->ctr = i32_supd(entry[prov]->ctr, b.isTaken(), ctrWidth[prov]);
-    entry[prov]->utl =
-        u32_supd(entry[prov]->utl, prediction == b.isTaken(), utlWidth[prov]);
-    if (prediction != b.isTaken()) {
+    entry[m0]->ctr = i32_supd(entry[m0]->ctr, b.isTaken(), ctrWidth[m0]);
+    entry[m0]->utl =
+        u32_supd(entry[m0]->utl, prediction == b.isTaken(), utlWidth[m0]);
+    bool m0remainsWeak = entry[m0]->ctr == -1 || entry[m0]->ctr == 0;
+    if (m0IsWeak && m0remainsWeak) entry[m0]->utl = 0;
+    if (prov == m1) {
+      entry[m1]->ctr = i32_supd(entry[m1]->ctr, b.isTaken(), ctrWidth[m1]);
+      entry[m1]->utl =
+          u32_supd(entry[m1]->utl, prediction == b.isTaken(), utlWidth[m1]);
+    }
+    if (m0 > 0 && m0IsWeak && predM0 != predM1) {
+      meta[metahash()].sumOrSub(predM1 == b.isTaken());
+    }
+    // If the prediction is wrong but m0 is correct (the prediction was m1),
+    // then there is no need to allocate a new entry.
+    if (prediction != b.isTaken() && predM0 != b.isTaken()) {
       bool allocated = false;
-      for (size_t i = prov + 1; i < table.size(); ++i) {
+      for (size_t i = m0 + 1; i < table.size(); ++i) {
         if (entry[i]->utl == 0) {
           entry[i]->tag = tag[i];
           entry[i]->ctr = b.isTaken() ? 0 : -1;
@@ -136,7 +143,7 @@ struct Tage : Predictor {
         }
       }
       if (!allocated) {
-        for (size_t i = prov + 1; i < table.size(); ++i) {
+        for (size_t i = m0 + 1; i < table.size(); ++i) {
           entry[i]->utl = u32_ssub(entry[i]->utl, 1);
         }
       }
