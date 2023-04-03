@@ -106,7 +106,7 @@ you will get the following output.
 
 MBPlib uses a custom binary trace format called Simple Binary Branch Trace format (extension .sbbt). Although MBPlib can read traces compressed with multiple utilities, like `gzip` and `xz`, the best compression ratio and decompression speed is obtained with [`zstd`] (by a big margin).
 
-You can download the set of 223 traces from the [Championship Branch Prediction 5] at https://webs.um.es/aros/tools/MBPLib_traces/cbp5/ and the 95 traces from the [3rd Data Prefetching Championship], which are based on the [SPEC CPU 2017] Benchmark, at https://webs.um.es/aros/tools/MBPLib_traces/dpc3/.
+You can download the training (223 traces) and evaluation (440 traces) workloads from the [Championship Branch Prediction 5] at https://webs.um.es/aros/tools/MBPLib_traces/cbp5_train/ and https://webs.um.es/aros/tools/MBPLib_traces/cbp5_eval/, respectively, and the 95 traces from the [3rd Data Prefetching Championship], which are based on the [SPEC CPU 2017] Benchmark, at https://webs.um.es/aros/tools/MBPLib_traces/dpc3/.
 
 You can also create your own traces using the [SBBT tracer](/app/tracer), an instrumentation tool built on top of [PIN].
 
