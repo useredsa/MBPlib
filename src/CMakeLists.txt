@@ -46,13 +46,13 @@ add_library(mbp_utils INTERFACE)
 target_include_directories(mbp_utils INTERFACE ../include)
 target_compile_features(mbp_utils INTERFACE cxx_std_17)
 
-add_library(mbp_examples SHARED examples/tage_sc_l_cbp5.cpp)
-target_link_libraries(mbp_examples PUBLIC mbp_core mbp_utils)
-target_include_directories(mbp_examples PUBLIC ../include)
+add_library(mbp_examples INTERFACE)
+target_link_libraries(mbp_examples INTERFACE mbp_core mbp_utils)
+target_include_directories(mbp_examples INTERFACE ../include)
 set_target_properties(mbp_examples PROPERTIES
   INTERPROCEDURAL_OPTIMIZATION TRUE
 )
-target_compile_features(mbp_examples PUBLIC cxx_std_17)
-target_compile_options(mbp_examples PRIVATE
+target_compile_features(mbp_examples INTERFACE cxx_std_17)
+target_compile_options(mbp_examples INTERFACE
   "-Wall" "-O3" "-march=native" "-mtune=native"
 )

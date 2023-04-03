@@ -92,7 +92,6 @@ add_mbp_sim(hashed_perceptron_64KB "mbp::HashedPerceptron<4, 16, 12, 18>{}")
 add_mbp_sim(tage_64KB "mbp::Tage{{TAGE_SPECS.begin(), TAGE_SPECS.end()}}")
 add_mbp_sim(batage_64KB
     "mbp::Batage{{BATAGE_SPECS.begin(), BATAGE_SPECS.end()}, BATAGE_SEED}")
-add_mbp_sim(tage_sc_l_64KB "mbp::TageScL{}")
 
 # Example comparing 2bcgskew_64KB and gshare_64KB
 add_mbp_comp(2bcgskwew_vs_gshare_64KB
