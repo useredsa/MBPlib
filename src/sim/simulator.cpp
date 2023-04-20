@@ -15,7 +15,7 @@ SimArgs ParseCmdLineArgs(int argc, char** argv) {
   SimArgs args;
   if (argc != 2 && argc != 4) {
     std::cerr << "Usage: " << argv[0];
-    std::cerr << " <trace> [<sim_instr> <warm_instr>]\n";
+    std::cerr << " <trace> [<warm_instr> <sim_instr>]\n";
     exit(ERR_INPUT_DATA);
   }
   args.tracepath = argv[1];

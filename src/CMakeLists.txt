@@ -32,7 +32,7 @@ target_compile_options(mbp_sbbt_writer PRIVATE
 )
 
 add_library(mbp_sim SHARED sim/simulator.cpp)
-target_link_libraries(mbp_sim PRIVATE mbp_trace_reader)
+target_link_libraries(mbp_sim PUBLIC mbp_core PRIVATE mbp_trace_reader)
 target_include_directories(mbp_sim PUBLIC ../include)
 set_target_properties(mbp_sim PROPERTIES
   INTERPROCEDURAL_OPTIMIZATION TRUE
