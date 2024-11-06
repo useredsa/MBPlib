@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(MBPlib
-  VERSION 0.4.0
+  VERSION 0.4.1
   DESCRIPTION "A simulation library for branch predictors"
   LANGUAGES CXX
 )

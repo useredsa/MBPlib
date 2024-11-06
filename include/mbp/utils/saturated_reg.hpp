@@ -82,8 +82,8 @@ class USatCtr {
       --(*this);
   }
 
-  constexpr void operator++() { x_ = std::min(x_ + 1U, kMaxValue); }
-  constexpr void operator--() { x_ = std::min(x_ - 1U, kMinValue); }
+  constexpr void operator++() { x_ = x_ == kMaxValue ? kMaxValue : x_ + 1U; }
+  constexpr void operator--() { x_ = x_ == kMinValue ? kMinValue : x_ - 1U; }
   constexpr void operator++(int) { ++(*this); }
   constexpr void operator--(int) { --(*this); }
 
